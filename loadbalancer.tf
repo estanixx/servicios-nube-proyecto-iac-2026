@@ -22,9 +22,10 @@ resource "google_compute_backend_service" "prod_backend" {
   timeout_sec = 10
 
   backend {
-    group           = google_compute_instance_group_manager.prod_mig.instance_group
-    balancing_mode  = "RATE"
-    capacity_scaler = 1.0
+    group                 = google_compute_instance_group_manager.prod_mig.instance_group
+    balancing_mode        = "RATE"
+    capacity_scaler       = 1.0
+    max_rate_per_instance = 50
   }
 
   health_checks = [google_compute_health_check.app_health_check.id]
@@ -37,9 +38,10 @@ resource "google_compute_backend_service" "failover_backend" {
   timeout_sec = 10
 
   backend {
-    group           = google_compute_instance_group_manager.failover_mig.instance_group
-    balancing_mode  = "RATE"
-    capacity_scaler = 1.0
+    group                 = google_compute_instance_group_manager.failover_mig.instance_group
+    balancing_mode        = "RATE"
+    capacity_scaler       = 1.0
+    max_rate_per_instance = 50
   }
 
   health_checks = [google_compute_health_check.app_health_check.id]
