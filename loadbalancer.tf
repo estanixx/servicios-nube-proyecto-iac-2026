@@ -68,5 +68,5 @@ resource "google_compute_global_forwarding_rule" "app_forwarding_rule" {
   port_range            = "80"
   ip_protocol           = "TCP"
   ip_address            = google_compute_global_address.lb_public_ip.address
-  load_balancing_scheme = "EXTERNAL_MANAGED"
+  load_balancing_scheme = "EXTERNAL"
 }
