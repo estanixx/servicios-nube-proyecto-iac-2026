@@ -30,7 +30,7 @@ The infrastructure is composed of three layers:
 
 1. **Network**: Custom VPC with two private subnets (`10.0.1.0/24` and `10.0.2.0/24`), Cloud Router + Cloud NAT for outbound internet access, and firewall rules allowing health check probes from Google's LB ranges.
 2. **Compute**: Two zonal Managed Instance Groups (MIGs), each with `target_size=1`, running `e2-micro` instances with Debian-11 and nginx. Instances have **no public IPs** — all traffic arrives through the Load Balancer.
-3. **Load Balancer**: Global external HTTP Load Balancer with a static IPv4 address. The URL Map uses `default_route_action.weighted_backend_services` to distribute traffic between the production and failover backends according to the configured weights.
+3. **Load Balancer**: Global external HTTP Load Balancer with a static IPv4 address. A single backend service contains both MIGs, and `capacity_scaler` (derived from the weight variables) controls the proportion of traffic each group receives.
 
 ## Traffic scenarios
 
@@ -68,7 +68,7 @@ For the Balanced scenario, run the curl command several times — consecutive re
 | `outputs.tf` | `lb_ip_address` and `lb_url` outputs |
 | `network.tf` | VPC, 2 private subnets, Cloud Router, Cloud NAT, firewall |
 | `instances.tf` | Service account, 2 instance templates, 2 zonal MIGs |
-| `loadbalancer.tf` | Health check, 2 backend services, URL map, HTTP proxy, global IP, forwarding rule |
+| `loadbalancer.tf` | Health check, backend service, URL map, HTTP proxy, global IP, forwarding rule |
 | `scripts/prod-startup.sh` | Startup script — nginx + emerald production HTML |
 | `scripts/failover-startup.sh` | Startup script — nginx + tomato maintenance HTML |
 | `AGENTS.md` | LLM-oriented documentation for codebase understanding |

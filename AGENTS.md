@@ -14,7 +14,7 @@ This is a university assignment for *Servicios en la Nube 2026-01*. It provision
 | `outputs.tf` | Exposes Load Balancer IP and URL | N/A (output declarations) |
 | `network.tf` | Network foundation | VPC, 2 subnets, Cloud Router, Cloud NAT, firewall rule |
 | `instances.tf` | Compute layer | Service account, 2 instance templates, 2 zonal MIGs |
-| `loadbalancer.tf` | Load balancing layer | Health check, 2 backend services, URL map, HTTP proxy, global IP, forwarding rule |
+| `loadbalancer.tf` | Load balancing layer | Health check, backend service, URL map, HTTP proxy, global IP, forwarding rule |
 | `scripts/prod-startup.sh` | Startup script for production | nginx install + emerald (#50C878) HTML page |
 | `scripts/failover-startup.sh` | Startup script for failover | nginx install + tomato (#FF6347) HTML page |
 
@@ -40,7 +40,7 @@ VPC → Subnets → Cloud Router → Cloud NAT → Firewall
 
 | Gotcha | Detail |
 |--------|--------|
-| `default_route_action` vs `default_service` | The URL Map uses `default_route_action.weighted_backend_services`, NOT `default_service`. These are **mutually exclusive** — mixing them causes a plan error. |
+| `capacity_scaler` for weighted traffic | The URL Map uses `default_service` pointing to a single backend service. Traffic distribution is controlled by `capacity_scaler` on each MIG's backend block (`production_weight / 100.0` and `failover_weight / 100.0`). A scaler of 0.0 sends no traffic; 1.0 sends full traffic. |
 | Health check ranges in firewall | The firewall must allow ingress from `35.191.0.0/16` and `130.211.0.0/22` on TCP port 80. GCP health probes originate from these ranges. |
 | Cloud NAT required | Instances are private (no `access_config` block). They need Cloud NAT for `apt-get` to install nginx from the internet. |
 | Weights must sum to 100 | `production_weight + failover_weight == 100` is enforced by a `validation` block in `variables.tf`. Any other sum is rejected at plan time. |
