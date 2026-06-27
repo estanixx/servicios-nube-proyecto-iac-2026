@@ -1,0 +1,33 @@
+# =============================================================================
+# GCP Terraform Infrastructure — Example tfvars
+# =============================================================================
+# Copy this file to terraform.tfvars and adjust values.
+#
+# Traffic is split between production and failover backends via
+# production_weight and failover_weight (they must sum to 100).
+#
+# Uncomment the scenario that matches your intent and adjust project_id/region
+# as needed.
+# =============================================================================
+
+project_id    = "my-gcp-project-id"
+region        = "us-central1"
+machine_type  = "e2-micro"
+
+# ---------------------------------------------------------------------------
+# Scenario 1 — Production Active (100% traffic to production)
+# ---------------------------------------------------------------------------
+# production_weight = 100
+# failover_weight   = 0
+
+# ---------------------------------------------------------------------------
+# Scenario 2 — Maintenance (100% traffic to failover/maintenance page)
+# ---------------------------------------------------------------------------
+# production_weight = 0
+# failover_weight   = 100
+
+# ---------------------------------------------------------------------------
+# Scenario 3 — Balanced (50/50 split for testing)
+# ---------------------------------------------------------------------------
+# production_weight = 50
+# failover_weight   = 50
