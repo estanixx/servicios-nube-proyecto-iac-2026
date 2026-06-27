@@ -1,7 +1,17 @@
 # =============================================================================
-# Load Balancer Layer — Health Check, Backend Services, URL Map, Proxy, and
+# Load Balancer Layer — Health Check, Backend Service, URL Map, Proxy, and
 # Forwarding Rule
 # =============================================================================
+#
+# Weighted traffic distribution is achieved by placing both MIGs as backends
+# in a single backend service and using capacity_scaler to control the
+# proportion of traffic each group receives:
+#
+#   Scenario          | prod capacity_scaler | fail capacity_scaler
+#   ------------------|---------------------|---------------------
+#   Production Active | 1.0                 | 0.0
+#   Maintenance       | 0.0                 | 1.0
+#   Balanced          | 0.5                 | 0.5
 
 resource "google_compute_health_check" "app_health_check" {
   name                = "app-health-check"
@@ -15,8 +25,8 @@ resource "google_compute_health_check" "app_health_check" {
   }
 }
 
-resource "google_compute_backend_service" "prod_backend" {
-  name        = "prod-backend"
+resource "google_compute_backend_service" "app_backend" {
+  name        = "app-backend"
   protocol    = "HTTP"
   port_name   = "http"
   timeout_sec = 10
@@ -24,23 +34,14 @@ resource "google_compute_backend_service" "prod_backend" {
   backend {
     group                 = google_compute_instance_group_manager.prod_mig.instance_group
     balancing_mode        = "RATE"
-    capacity_scaler       = 1.0
+    capacity_scaler       = var.production_weight / 100.0
     max_rate_per_instance = 50
   }
-
-  health_checks = [google_compute_health_check.app_health_check.id]
-}
-
-resource "google_compute_backend_service" "failover_backend" {
-  name        = "failover-backend"
-  protocol    = "HTTP"
-  port_name   = "http"
-  timeout_sec = 10
 
   backend {
     group                 = google_compute_instance_group_manager.failover_mig.instance_group
     balancing_mode        = "RATE"
-    capacity_scaler       = 1.0
+    capacity_scaler       = var.failover_weight / 100.0
     max_rate_per_instance = 50
   }
 
@@ -48,19 +49,8 @@ resource "google_compute_backend_service" "failover_backend" {
 }
 
 resource "google_compute_url_map" "app_url_map" {
-  name = "app-url-map"
-
-  default_route_action {
-    weighted_backend_services {
-      backend_service = google_compute_backend_service.prod_backend.id
-      weight          = var.production_weight
-    }
-
-    weighted_backend_services {
-      backend_service = google_compute_backend_service.failover_backend.id
-      weight          = var.failover_weight
-    }
-  }
+  name            = "app-url-map"
+  default_service = google_compute_backend_service.app_backend.id
 }
 
 resource "google_compute_target_http_proxy" "app_http_proxy" {
