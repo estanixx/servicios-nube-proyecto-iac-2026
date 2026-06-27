@@ -41,3 +41,9 @@ variable "machine_type" {
   type        = string
   default     = "e2-micro"
 }
+
+variable "zone" {
+  description = "GCP zone for instances"
+  type        = string
+  default     = "us-central1-c"
+}
