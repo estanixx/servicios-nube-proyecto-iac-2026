@@ -12,11 +12,15 @@ University cloud services project deploying two independent nginx instances (pro
 ## Quick start
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcp-credentials.json"
 terraform init
-# Edit terraform.tfvars with your GCP project ID
 terraform apply
 ```
+
+`project_id` defaults to the project this repository is meant to deploy into
+(`servicios-nube-iac-2026`), so `terraform apply` runs without any extra
+configuration. Override it if needed with `-var="project_id=YOUR_PROJECT"`.
+Authentication uses your active `gcloud` credentials (Application Default
+Credentials); the reviewer is granted the `roles/editor` role on the project.
 
 After apply completes, get the Load Balancer IP:
 
@@ -59,6 +63,17 @@ curl http://$(terraform output -raw lb_ip_address)
 For the Balanced scenario, run the curl command several times — consecutive requests alternate between the two responses.
 
 > **Note on propagation:** the global Application Load Balancer is an Anycast service. After `terraform apply` (or after changing the weights), allow **~4–5 minutes** for the configuration to propagate across Google's edge before testing — early requests may time out or return the previous weighting until propagation completes.
+
+## Evidencias
+
+Request logs captured live against the deployed Load Balancer for each scenario
+are in [`evidence/`](evidence/):
+
+| Scenario | Weights | Log | Result |
+|----------|---------|-----|--------|
+| Production Active | 100 / 0 | [`escenario-1-produccion.log`](evidence/escenario-1-produccion.log) | 20/20 production |
+| Maintenance | 0 / 100 | [`escenario-2-mantenimiento.log`](evidence/escenario-2-mantenimiento.log) | 20/20 maintenance |
+| Balanced | 50 / 50 | [`escenario-3-balanceado.log`](evidence/escenario-3-balanceado.log) | alternating, ~50/50 |
 
 ## File structure
 
