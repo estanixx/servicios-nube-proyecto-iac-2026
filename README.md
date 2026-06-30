@@ -30,7 +30,7 @@ The infrastructure is composed of three layers:
 
 1. **Network**: Custom VPC with two private subnets (`10.0.1.0/24` and `10.0.2.0/24`), Cloud Router + Cloud NAT for outbound internet access, and firewall rules allowing health check probes from Google's LB ranges.
 2. **Compute**: Two zonal Managed Instance Groups (MIGs), each with `target_size=1`, running `e2-micro` instances with Debian-11 and nginx. Instances have **no public IPs** — all traffic arrives through the Load Balancer.
-3. **Load Balancer**: Global external HTTP Load Balancer with a static IPv4 address. A single backend service contains both MIGs, and `capacity_scaler` (derived from the weight variables) controls the proportion of traffic each group receives.
+3. **Load Balancer**: Global external Application Load Balancer (`EXTERNAL_MANAGED`) with a static IPv4 address. Each MIG has its own backend service (`prod-backend`, `failover-backend`), and the URL map's `weighted_backend_services` route action splits traffic between them according to `production_weight` and `failover_weight`. This splits traffic per-request — even at low request volume — so the balanced scenario alternates between both services.
 
 ## Traffic scenarios
 
@@ -56,7 +56,9 @@ Test with:
 curl http://$(terraform output -raw lb_ip_address)
 ```
 
-For the Balanced scenario, run the curl command several times — consecutive requests should alternate between the two responses.
+For the Balanced scenario, run the curl command several times — consecutive requests alternate between the two responses.
+
+> **Note on propagation:** the global Application Load Balancer is an Anycast service. After `terraform apply` (or after changing the weights), allow **~4–5 minutes** for the configuration to propagate across Google's edge before testing — early requests may time out or return the previous weighting until propagation completes.
 
 ## File structure
 
@@ -68,7 +70,7 @@ For the Balanced scenario, run the curl command several times — consecutive re
 | `outputs.tf` | `lb_ip_address` and `lb_url` outputs |
 | `network.tf` | VPC, 2 private subnets, Cloud Router, Cloud NAT, firewall |
 | `instances.tf` | Service account, 2 instance templates, 2 zonal MIGs |
-| `loadbalancer.tf` | Health check, backend service, URL map, HTTP proxy, global IP, forwarding rule |
+| `loadbalancer.tf` | Health check, two backend services, URL map with weighted routing, HTTP proxy, global IP, forwarding rule |
 | `scripts/prod-startup.sh` | Startup script — nginx + emerald production HTML |
 | `scripts/failover-startup.sh` | Startup script — nginx + tomato maintenance HTML |
 | `AGENTS.md` | LLM-oriented documentation for codebase understanding |
