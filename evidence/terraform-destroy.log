@@ -1,0 +1,466 @@
+===============================================================
+ EVIDENCIA — terraform destroy (cierre del proyecto)
+ Fecha: 2026-06-30 12:42:12 -05
+ Proyecto: servicios-nube-iac-2026
+===============================================================
+google_compute_network.app_vpc: Refreshing state... [id=projects/servicios-nube-iac-2026/global/networks/app-vpc]
+google_service_account.app_sa: Refreshing state... [id=projects/servicios-nube-iac-2026/serviceAccounts/app-sa@servicios-nube-iac-2026.iam.gserviceaccount.com]
+google_compute_health_check.app_health_check: Refreshing state... [id=projects/servicios-nube-iac-2026/global/healthChecks/app-health-check]
+google_compute_subnetwork.private_failover: Refreshing state... [id=projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-failover]
+google_compute_subnetwork.private_prod: Refreshing state... [id=projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-prod]
+google_compute_instance_template.failover_template: Refreshing state... [id=projects/servicios-nube-iac-2026/global/instanceTemplates/failover-template]
+google_compute_instance_template.prod_template: Refreshing state... [id=projects/servicios-nube-iac-2026/global/instanceTemplates/prod-template]
+google_compute_instance_group_manager.prod_mig: Refreshing state... [id=projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/prod-mig]
+google_compute_instance_group_manager.failover_mig: Refreshing state... [id=projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/failover-mig]
+google_compute_backend_service.prod_backend: Refreshing state... [id=projects/servicios-nube-iac-2026/global/backendServices/prod-backend]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # google_compute_health_check.app_health_check will be destroyed
+  - resource "google_compute_health_check" "app_health_check" {
+      - check_interval_sec  = 5 -> null
+      - creation_timestamp  = "2026-06-30T07:50:11.870-07:00" -> null
+      - deletion_policy     = "DELETE" -> null
+      - healthy_threshold   = 2 -> null
+      - id                  = "projects/servicios-nube-iac-2026/global/healthChecks/app-health-check" -> null
+      - name                = "app-health-check" -> null
+      - project             = "servicios-nube-iac-2026" -> null
+      - self_link           = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/healthChecks/app-health-check" -> null
+      - source_regions      = [] -> null
+      - timeout_sec         = 5 -> null
+      - type                = "HTTP" -> null
+      - unhealthy_threshold = 2 -> null
+        # (1 unchanged attribute hidden)
+
+      - http_health_check {
+          - port               = 80 -> null
+          - proxy_header       = "NONE" -> null
+          - request_path       = "/" -> null
+            # (4 unchanged attributes hidden)
+        }
+
+      - log_config {
+          - enable = false -> null
+        }
+    }
+
+  # google_compute_instance_group_manager.prod_mig will be destroyed
+  - resource "google_compute_instance_group_manager" "prod_mig" {
+      - base_instance_name             = "prod" -> null
+      - creation_timestamp             = "2026-06-30T07:50:38.446-07:00" -> null
+      - deletion_policy                = "DELETE" -> null
+      - fingerprint                    = "ZtFuEAZxxRg=" -> null
+      - id                             = "projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/prod-mig" -> null
+      - instance_group                 = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroups/prod-mig" -> null
+      - instance_group_manager_id      = 1041871627805944145 -> null
+      - list_managed_instances_results = "PAGELESS" -> null
+      - name                           = "prod-mig" -> null
+      - project                        = "servicios-nube-iac-2026" -> null
+      - self_link                      = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/prod-mig" -> null
+      - status                         = [
+          - {
+              - all_instances_config = [
+                  - {
+                      - effective        = true
+                        # (1 unchanged attribute hidden)
+                    },
+                ]
+              - is_stable            = true
+              - stateful             = [
+                  - {
+                      - has_stateful_config  = false
+                      - per_instance_configs = [
+                          - {
+                              - all_effective = true
+                            },
+                        ]
+                    },
+                ]
+              - version_target       = [
+                  - {
+                      - is_reached = true
+                    },
+                ]
+            },
+        ] -> null
+      - target_pools                   = [] -> null
+      - target_size                    = 1 -> null
+      - target_stopped_size            = 0 -> null
+      - target_suspended_size          = 0 -> null
+      - wait_for_instances             = false -> null
+      - wait_for_instances_status      = "STABLE" -> null
+      - zone                           = "us-east1-b" -> null
+        # (1 unchanged attribute hidden)
+
+      - instance_lifecycle_policy {
+          - default_action_on_failure = "REPAIR" -> null
+          - force_update_on_repair    = "NO" -> null
+        }
+
+      - named_port {
+          - name = "http" -> null
+          - port = 80 -> null
+        }
+
+      - standby_policy {
+          - initial_delay_sec = 0 -> null
+          - mode              = "MANUAL" -> null
+        }
+
+      - target_size_policy {
+          - mode = "INDIVIDUAL" -> null
+        }
+
+      - update_policy {
+          - max_surge_fixed                = 1 -> null
+          - max_surge_percent              = 0 -> null
+          - max_unavailable_fixed          = 1 -> null
+          - max_unavailable_percent        = 0 -> null
+          - minimal_action                 = "REPLACE" -> null
+          - replacement_method             = "SUBSTITUTE" -> null
+          - type                           = "OPPORTUNISTIC" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - version {
+          - instance_template = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/instanceTemplates/prod-template" -> null
+            name              = null
+        }
+    }
+
+  # google_compute_instance_template.failover_template will be destroyed
+  - resource "google_compute_instance_template" "failover_template" {
+      - can_ip_forward             = false -> null
+      - creation_timestamp         = "2026-06-30T07:50:35.428-07:00" -> null
+      - effective_labels           = {
+          - "goog-terraform-provisioned" = "true"
+        } -> null
+      - id                         = "projects/servicios-nube-iac-2026/global/instanceTemplates/failover-template" -> null
+      - labels                     = {} -> null
+      - machine_type               = "e2-micro" -> null
+      - metadata                   = {} -> null
+      - metadata_fingerprint       = "CxkeVzNEvyE=" -> null
+      - metadata_startup_script    = <<-EOT
+            #!/bin/bash
+            set -euo pipefail
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y nginx-light
+            
+            cat > /var/www/html/index.html << 'HTMLEOF'
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <style>
+                body { background-color: #FF6347; }
+                h1 { color: white; text-align: center; margin-top: 20%; font-family: Arial; font-size: 3em; }
+              </style>
+            </head>
+            <body>
+              <h1>Error 503 - Sitio en Mantenimiento Programado</h1>
+            </body>
+            </html>
+            HTMLEOF
+            
+            systemctl enable nginx
+            systemctl restart nginx
+        EOT -> null
+      - name                       = "failover-template" -> null
+      - numeric_id                 = "8926756156704975188" -> null
+      - project                    = "servicios-nube-iac-2026" -> null
+      - region                     = "us-east1" -> null
+      - self_link                  = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/instanceTemplates/failover-template" -> null
+      - self_link_unique           = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/instanceTemplates/failover-template?uniqueId=8926756156704975188" -> null
+      - tags                       = [
+          - "http-server",
+        ] -> null
+      - terraform_labels           = {
+          - "goog-terraform-provisioned" = "true"
+        } -> null
+        # (5 unchanged attributes hidden)
+
+      - disk {
+          - auto_delete            = true -> null
+          - boot                   = true -> null
+          - device_name            = "persistent-disk-0" -> null
+          - disk_size_gb           = 10 -> null
+          - disk_type              = "pd-standard" -> null
+          - guest_os_features      = [] -> null
+          - labels                 = {} -> null
+          - mode                   = "READ_WRITE" -> null
+          - provisioned_iops       = 0 -> null
+          - provisioned_throughput = 0 -> null
+          - resource_manager_tags  = {} -> null
+          - resource_policies      = [] -> null
+          - source_image           = "projects/debian-cloud/global/images/family/debian-11" -> null
+          - type                   = "PERSISTENT" -> null
+            # (6 unchanged attributes hidden)
+        }
+
+      - network_interface {
+          - internal_ipv6_prefix_length = 0 -> null
+          - name                        = "nic0" -> null
+          - network                     = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/networks/app-vpc" -> null
+          - queue_count                 = 0 -> null
+          - subnetwork                  = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-failover" -> null
+          - subnetwork_project          = "servicios-nube-iac-2026" -> null
+          - vlan                        = 0 -> null
+            # (8 unchanged attributes hidden)
+        }
+
+      - scheduling {
+          - automatic_restart           = true -> null
+          - availability_domain         = 0 -> null
+          - min_node_cpus               = 0 -> null
+          - on_host_maintenance         = "MIGRATE" -> null
+          - preemptible                 = false -> null
+          - provisioning_model          = "STANDARD" -> null
+            # (2 unchanged attributes hidden)
+        }
+
+      - service_account {
+          - email  = "app-sa@servicios-nube-iac-2026.iam.gserviceaccount.com" -> null
+          - scopes = [
+              - "https://www.googleapis.com/auth/cloud-platform",
+            ] -> null
+        }
+    }
+
+  # google_compute_instance_template.prod_template will be destroyed
+  - resource "google_compute_instance_template" "prod_template" {
+      - can_ip_forward             = false -> null
+      - creation_timestamp         = "2026-06-30T07:50:35.623-07:00" -> null
+      - effective_labels           = {
+          - "goog-terraform-provisioned" = "true"
+        } -> null
+      - id                         = "projects/servicios-nube-iac-2026/global/instanceTemplates/prod-template" -> null
+      - labels                     = {} -> null
+      - machine_type               = "e2-micro" -> null
+      - metadata                   = {} -> null
+      - metadata_fingerprint       = "jyWx2kHeqzA=" -> null
+      - metadata_startup_script    = <<-EOT
+            #!/bin/bash
+            set -euo pipefail
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y nginx-light
+            
+            cat > /var/www/html/index.html << 'HTMLEOF'
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <style>
+                body { background-color: #50C878; }
+                h1 { color: white; text-align: center; margin-top: 20%; font-family: Arial; font-size: 3em; }
+              </style>
+            </head>
+            <body>
+              <h1>Bienvenido al Servicio Principal - Versión Producción</h1>
+            </body>
+            </html>
+            HTMLEOF
+            
+            systemctl enable nginx
+            systemctl restart nginx
+        EOT -> null
+      - name                       = "prod-template" -> null
+      - numeric_id                 = "7774758727196764500" -> null
+      - project                    = "servicios-nube-iac-2026" -> null
+      - region                     = "us-east1" -> null
+      - self_link                  = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/instanceTemplates/prod-template" -> null
+      - self_link_unique           = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/instanceTemplates/prod-template?uniqueId=7774758727196764500" -> null
+      - tags                       = [
+          - "http-server",
+        ] -> null
+      - terraform_labels           = {
+          - "goog-terraform-provisioned" = "true"
+        } -> null
+        # (5 unchanged attributes hidden)
+
+      - disk {
+          - auto_delete            = true -> null
+          - boot                   = true -> null
+          - device_name            = "persistent-disk-0" -> null
+          - disk_size_gb           = 10 -> null
+          - disk_type              = "pd-standard" -> null
+          - guest_os_features      = [] -> null
+          - labels                 = {} -> null
+          - mode                   = "READ_WRITE" -> null
+          - provisioned_iops       = 0 -> null
+          - provisioned_throughput = 0 -> null
+          - resource_manager_tags  = {} -> null
+          - resource_policies      = [] -> null
+          - source_image           = "projects/debian-cloud/global/images/family/debian-11" -> null
+          - type                   = "PERSISTENT" -> null
+            # (6 unchanged attributes hidden)
+        }
+
+      - network_interface {
+          - internal_ipv6_prefix_length = 0 -> null
+          - name                        = "nic0" -> null
+          - network                     = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/networks/app-vpc" -> null
+          - queue_count                 = 0 -> null
+          - subnetwork                  = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-prod" -> null
+          - subnetwork_project          = "servicios-nube-iac-2026" -> null
+          - vlan                        = 0 -> null
+            # (8 unchanged attributes hidden)
+        }
+
+      - scheduling {
+          - automatic_restart           = true -> null
+          - availability_domain         = 0 -> null
+          - min_node_cpus               = 0 -> null
+          - on_host_maintenance         = "MIGRATE" -> null
+          - preemptible                 = false -> null
+          - provisioning_model          = "STANDARD" -> null
+            # (2 unchanged attributes hidden)
+        }
+
+      - service_account {
+          - email  = "app-sa@servicios-nube-iac-2026.iam.gserviceaccount.com" -> null
+          - scopes = [
+              - "https://www.googleapis.com/auth/cloud-platform",
+            ] -> null
+        }
+    }
+
+  # google_compute_network.app_vpc will be destroyed
+  - resource "google_compute_network" "app_vpc" {
+      - auto_create_subnetworks                   = false -> null
+      - bgp_always_compare_med                    = false -> null
+      - bgp_best_path_selection_mode              = "LEGACY" -> null
+      - delete_bgp_always_compare_med             = false -> null
+      - delete_default_routes_on_create           = false -> null
+      - deletion_policy                           = "DELETE" -> null
+      - enable_ula_internal_ipv6                  = false -> null
+      - id                                        = "projects/servicios-nube-iac-2026/global/networks/app-vpc" -> null
+      - mtu                                       = 0 -> null
+      - name                                      = "app-vpc" -> null
+      - network_firewall_policy_enforcement_order = "AFTER_CLASSIC_FIREWALL" -> null
+      - network_id                                = "1734766972113938764" -> null
+      - numeric_id                                = "1734766972113938764" -> null
+      - project                                   = "servicios-nube-iac-2026" -> null
+      - routing_mode                              = "REGIONAL" -> null
+      - self_link                                 = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/networks/app-vpc" -> null
+        # (5 unchanged attributes hidden)
+    }
+
+  # google_compute_subnetwork.private_failover will be destroyed
+  - resource "google_compute_subnetwork" "private_failover" {
+      - allow_subnet_cidr_routes_overlap = false -> null
+      - creation_timestamp               = "2026-06-30T07:50:23.433-07:00" -> null
+      - deletion_policy                  = "DELETE" -> null
+      - gateway_address                  = "10.0.2.1" -> null
+      - id                               = "projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-failover" -> null
+      - ip_cidr_range                    = "10.0.2.0/24" -> null
+      - name                             = "private-failover" -> null
+      - network                          = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/networks/app-vpc" -> null
+      - private_ip_google_access         = true -> null
+      - private_ipv6_google_access       = "DISABLE_GOOGLE_ACCESS" -> null
+      - project                          = "servicios-nube-iac-2026" -> null
+      - purpose                          = "PRIVATE" -> null
+      - region                           = "us-east1" -> null
+      - self_link                        = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-failover" -> null
+      - stack_type                       = "IPV4_ONLY" -> null
+      - subnetwork_id                    = 1115136605870254400 -> null
+        # (11 unchanged attributes hidden)
+    }
+
+  # google_compute_subnetwork.private_prod will be destroyed
+  - resource "google_compute_subnetwork" "private_prod" {
+      - allow_subnet_cidr_routes_overlap = false -> null
+      - creation_timestamp               = "2026-06-30T07:50:23.364-07:00" -> null
+      - deletion_policy                  = "DELETE" -> null
+      - gateway_address                  = "10.0.1.1" -> null
+      - id                               = "projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-prod" -> null
+      - ip_cidr_range                    = "10.0.1.0/24" -> null
+      - name                             = "private-prod" -> null
+      - network                          = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/global/networks/app-vpc" -> null
+      - private_ip_google_access         = true -> null
+      - private_ipv6_google_access       = "DISABLE_GOOGLE_ACCESS" -> null
+      - project                          = "servicios-nube-iac-2026" -> null
+      - purpose                          = "PRIVATE" -> null
+      - region                           = "us-east1" -> null
+      - self_link                        = "https://www.googleapis.com/compute/v1/projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-prod" -> null
+      - stack_type                       = "IPV4_ONLY" -> null
+      - subnetwork_id                    = 4318130049072916800 -> null
+        # (11 unchanged attributes hidden)
+    }
+
+  # google_service_account.app_sa will be destroyed
+  - resource "google_service_account" "app_sa" {
+      - account_id      = "app-sa" -> null
+      - deletion_policy = "DELETE" -> null
+      - disabled        = false -> null
+      - display_name    = "App Service Account" -> null
+      - email           = "app-sa@servicios-nube-iac-2026.iam.gserviceaccount.com" -> null
+      - id              = "projects/servicios-nube-iac-2026/serviceAccounts/app-sa@servicios-nube-iac-2026.iam.gserviceaccount.com" -> null
+      - member          = "serviceAccount:app-sa@servicios-nube-iac-2026.iam.gserviceaccount.com" -> null
+      - name            = "projects/servicios-nube-iac-2026/serviceAccounts/app-sa@servicios-nube-iac-2026.iam.gserviceaccount.com" -> null
+      - project         = "servicios-nube-iac-2026" -> null
+      - unique_id       = "118096984523540046236" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+Plan: 0 to add, 0 to change, 8 to destroy.
+google_compute_health_check.app_health_check: Destroying... [id=projects/servicios-nube-iac-2026/global/healthChecks/app-health-check]
+google_compute_instance_group_manager.prod_mig: Destroying... [id=projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/prod-mig]
+google_compute_instance_template.failover_template: Destroying... [id=projects/servicios-nube-iac-2026/global/instanceTemplates/failover-template]
+google_compute_instance_group_manager.prod_mig: Still destroying... [id=projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/prod-mig, 00m10s elapsed]
+google_compute_health_check.app_health_check: Still destroying... [id=projects/servicios-nube-iac-2026/global/healthChecks/app-health-check, 00m10s elapsed]
+google_compute_instance_template.failover_template: Still destroying... [id=projects/servicios-nube-iac-2026/global/instanceTemplates/failover-template, 00m10s elapsed]
+google_compute_health_check.app_health_check: Destruction complete after 11s
+google_compute_instance_template.failover_template: Destruction complete after 12s
+google_compute_subnetwork.private_failover: Destroying... [id=projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-failover]
+google_compute_instance_group_manager.prod_mig: Still destroying... [id=projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/prod-mig, 00m20s elapsed]
+google_compute_subnetwork.private_failover: Still destroying... [id=projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-failover, 00m10s elapsed]
+google_compute_subnetwork.private_failover: Destruction complete after 11s
+google_compute_instance_group_manager.prod_mig: Still destroying... [id=projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/prod-mig, 00m30s elapsed]
+google_compute_instance_group_manager.prod_mig: Still destroying... [id=projects/servicios-nube-iac-2026/zones/us-east1-b/instanceGroupManagers/prod-mig, 00m40s elapsed]
+google_compute_instance_group_manager.prod_mig: Destruction complete after 42s
+google_compute_instance_template.prod_template: Destroying... [id=projects/servicios-nube-iac-2026/global/instanceTemplates/prod-template]
+google_compute_instance_template.prod_template: Still destroying... [id=projects/servicios-nube-iac-2026/global/instanceTemplates/prod-template, 00m10s elapsed]
+google_compute_instance_template.prod_template: Destruction complete after 11s
+google_service_account.app_sa: Destroying... [id=projects/servicios-nube-iac-2026/serviceAccounts/app-sa@servicios-nube-iac-2026.iam.gserviceaccount.com]
+google_compute_subnetwork.private_prod: Destroying... [id=projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-prod]
+google_service_account.app_sa: Destruction complete after 1s
+google_compute_subnetwork.private_prod: Still destroying... [id=projects/servicios-nube-iac-2026/regions/us-east1/subnetworks/private-prod, 00m10s elapsed]
+google_compute_subnetwork.private_prod: Destruction complete after 11s
+google_compute_network.app_vpc: Destroying... [id=projects/servicios-nube-iac-2026/global/networks/app-vpc]
+google_compute_network.app_vpc: Still destroying... [id=projects/servicios-nube-iac-2026/global/networks/app-vpc, 00m10s elapsed]
+google_compute_network.app_vpc: Still destroying... [id=projects/servicios-nube-iac-2026/global/networks/app-vpc, 00m20s elapsed]
+google_compute_network.app_vpc: Destruction complete after 22s
+
+Destroy complete! Resources: 8 destroyed.
+
+===============================================================
+ VERIFICACIÓN POST-DESTROY — recursos del proyecto en GCP
+ Fecha: 2026-06-30 12:45:56 -05
+===============================================================
+[terraform state list] (debe estar vacío):
+
+[instancias]:        1  ->
+Listed 0 items.
+[discos]:
+Listed 0 items.
+[forwarding-rules global]:
+Listed 0 items.
+[backend-services]:
+Listed 0 items.
+[direcciones IP global]:
+Listed 0 items.
+[routers/NAT]:
+Listed 0 items.
+[health-checks]:
+Listed 0 items.
+[MIGs]:
+[templates]:
+Listed 0 items.
+
+NOTA: la red 'default' y sus reglas default-allow-* son creadas por GCP
+automaticamente en todo proyecto y NO generan costo (VPC vacia = $0).
+Ningun recurso de este proyecto permanece activo.

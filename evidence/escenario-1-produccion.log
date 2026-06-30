@@ -1,0 +1,29 @@
+===============================================================
+ EVIDENCIA — Escenario 1: Producción Activa (100 / 0)
+ Fecha: 2026-06-30 11:51:47 -05
+ LB IP: http://8.233.65.200
+ production_weight = 100 | failover_weight = 0
+===============================================================
+--- 20 peticiones (texto del <h1>) ---
+req  1: Bienvenido al Servicio Principal - Versión Producción
+req  2: Bienvenido al Servicio Principal - Versión Producción
+req  3: Bienvenido al Servicio Principal - Versión Producción
+req  4: Bienvenido al Servicio Principal - Versión Producción
+req  5: Bienvenido al Servicio Principal - Versión Producción
+req  6: Bienvenido al Servicio Principal - Versión Producción
+req  7: Bienvenido al Servicio Principal - Versión Producción
+req  8: Bienvenido al Servicio Principal - Versión Producción
+req  9: Bienvenido al Servicio Principal - Versión Producción
+req 10: Bienvenido al Servicio Principal - Versión Producción
+req 11: Bienvenido al Servicio Principal - Versión Producción
+req 12: Bienvenido al Servicio Principal - Versión Producción
+req 13: Bienvenido al Servicio Principal - Versión Producción
+req 14: Bienvenido al Servicio Principal - Versión Producción
+req 15: Bienvenido al Servicio Principal - Versión Producción
+req 16: Bienvenido al Servicio Principal - Versión Producción
+req 17: Bienvenido al Servicio Principal - Versión Producción
+req 18: Bienvenido al Servicio Principal - Versión Producción
+req 19: Bienvenido al Servicio Principal - Versión Producción
+req 20: Bienvenido al Servicio Principal - Versión Producción
+--- Resumen ---
+  20 Bienvenido al Servicio Principal - Versión Producción

@@ -1,0 +1,40 @@
+===============================================================
+ EVIDENCIA — Escenario 3: Balanceado (50 / 50)
+ Fecha: 2026-06-30 11:59:47 -05
+ LB IP: http://8.233.65.200
+ production_weight = 50 | failover_weight = 50
+===============================================================
+--- 30 peticiones consecutivas (se ve la alternancia) ---
+req  1: Error 503 - Sitio en Mantenimiento Programado
+req  2: Bienvenido al Servicio Principal - Versión Producción
+req  3: Error 503 - Sitio en Mantenimiento Programado
+req  4: Error 503 - Sitio en Mantenimiento Programado
+req  5: Bienvenido al Servicio Principal - Versión Producción
+req  6: Bienvenido al Servicio Principal - Versión Producción
+req  7: Error 503 - Sitio en Mantenimiento Programado
+req  8: Bienvenido al Servicio Principal - Versión Producción
+req  9: Error 503 - Sitio en Mantenimiento Programado
+req 10: Bienvenido al Servicio Principal - Versión Producción
+req 11: Bienvenido al Servicio Principal - Versión Producción
+req 12: Error 503 - Sitio en Mantenimiento Programado
+req 13: Bienvenido al Servicio Principal - Versión Producción
+req 14: Error 503 - Sitio en Mantenimiento Programado
+req 15: Error 503 - Sitio en Mantenimiento Programado
+req 16: Error 503 - Sitio en Mantenimiento Programado
+req 17: Error 503 - Sitio en Mantenimiento Programado
+req 18: Bienvenido al Servicio Principal - Versión Producción
+req 19: Bienvenido al Servicio Principal - Versión Producción
+req 20: Bienvenido al Servicio Principal - Versión Producción
+req 21: Error 503 - Sitio en Mantenimiento Programado
+req 22: Error 503 - Sitio en Mantenimiento Programado
+req 23: Error 503 - Sitio en Mantenimiento Programado
+req 24: Bienvenido al Servicio Principal - Versión Producción
+req 25: Bienvenido al Servicio Principal - Versión Producción
+req 26: Error 503 - Sitio en Mantenimiento Programado
+req 27: Bienvenido al Servicio Principal - Versión Producción
+req 28: Error 503 - Sitio en Mantenimiento Programado
+req 29: Bienvenido al Servicio Principal - Versión Producción
+req 30: Bienvenido al Servicio Principal - Versión Producción
+--- Resumen ---
+  12 Bienvenido al Servicio Principal - Versión Producción
+  18 Error 503 - Sitio en Mantenimiento Programado

@@ -1,0 +1,29 @@
+===============================================================
+ EVIDENCIA — Escenario 2: Mantenimiento Total (0 / 100)
+ Fecha: 2026-06-30 11:56:08 -05
+ LB IP: http://8.233.65.200
+ production_weight = 0 | failover_weight = 100
+===============================================================
+--- 20 peticiones (texto del <h1>) ---
+req  1: Error 503 - Sitio en Mantenimiento Programado
+req  2: Error 503 - Sitio en Mantenimiento Programado
+req  3: Error 503 - Sitio en Mantenimiento Programado
+req  4: Error 503 - Sitio en Mantenimiento Programado
+req  5: Error 503 - Sitio en Mantenimiento Programado
+req  6: Error 503 - Sitio en Mantenimiento Programado
+req  7: Error 503 - Sitio en Mantenimiento Programado
+req  8: Error 503 - Sitio en Mantenimiento Programado
+req  9: Error 503 - Sitio en Mantenimiento Programado
+req 10: Error 503 - Sitio en Mantenimiento Programado
+req 11: Error 503 - Sitio en Mantenimiento Programado
+req 12: Error 503 - Sitio en Mantenimiento Programado
+req 13: Error 503 - Sitio en Mantenimiento Programado
+req 14: Error 503 - Sitio en Mantenimiento Programado
+req 15: Error 503 - Sitio en Mantenimiento Programado
+req 16: Error 503 - Sitio en Mantenimiento Programado
+req 17: Error 503 - Sitio en Mantenimiento Programado
+req 18: Error 503 - Sitio en Mantenimiento Programado
+req 19: Error 503 - Sitio en Mantenimiento Programado
+req 20: Error 503 - Sitio en Mantenimiento Programado
+--- Resumen ---
+  20 Error 503 - Sitio en Mantenimiento Programado

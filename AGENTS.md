@@ -2,7 +2,7 @@
 
 ## Project overview
 
-This is a university assignment for *Servicios en la Nube 2026-01*. It provisions a GCP infrastructure with two private nginx instances (production + failover) behind a single global HTTP Load Balancer. Traffic distribution between the two backends is controlled via Terraform variables (`production_weight` and `failover_weight`). Everything is deployed with a single `terraform apply`.
+This is a university assignment for *Servicios en la Nube 2026-01*. It provisions a GCP infrastructure with two private nginx instances (production + failover) behind a single global external Application Load Balancer (`EXTERNAL_MANAGED`). Traffic distribution between the two backends is controlled via Terraform variables (`production_weight` and `failover_weight`) using the URL map's `weighted_backend_services` route action. Everything is deployed with a single `terraform apply`.
 
 ## File map
 
@@ -14,7 +14,7 @@ This is a university assignment for *Servicios en la Nube 2026-01*. It provision
 | `outputs.tf` | Exposes Load Balancer IP and URL | N/A (output declarations) |
 | `network.tf` | Network foundation | VPC, 2 subnets, Cloud Router, Cloud NAT, firewall rule |
 | `instances.tf` | Compute layer | Service account, 2 instance templates, 2 zonal MIGs |
-| `loadbalancer.tf` | Load balancing layer | Health check, backend service, URL map, HTTP proxy, global IP, forwarding rule |
+| `loadbalancer.tf` | Load balancing layer | Health check, 2 backend services (EXTERNAL_MANAGED), URL map with weighted_backend_services, HTTP proxy, global IP, forwarding rule |
 | `scripts/prod-startup.sh` | Startup script for production | nginx install + emerald (#50C878) HTML page |
 | `scripts/failover-startup.sh` | Startup script for failover | nginx install + tomato (#FF6347) HTML page |
 
@@ -40,13 +40,14 @@ VPC → Subnets → Cloud Router → Cloud NAT → Firewall
 
 | Gotcha | Detail |
 |--------|--------|
-| `capacity_scaler` for weighted traffic | The URL Map uses `default_service` pointing to a single backend service. Traffic distribution is controlled by `capacity_scaler` on each MIG's backend block (`production_weight / 100.0` and `failover_weight / 100.0`). A scaler of 0.0 sends no traffic; 1.0 sends full traffic. |
+| `weighted_backend_services` for weighted traffic | The URL Map uses `default_route_action.weighted_backend_services` to split requests between `prod-backend` and `failover-backend` by `weight = var.production_weight` / `var.failover_weight`. Weights are relative; a weight of 0 sends no traffic. This requires the modern `EXTERNAL_MANAGED` (Global external Application LB) scheme on the backend services and forwarding rule — the classic `EXTERNAL` scheme does **not** support per-request weighted splitting. `default_service` and `weighted_backend_services` are mutually exclusive in a URL map. |
+| LB config propagation delay | The Global external Application LB is an Anycast service. After `apply` or a weight change, allow **~4–5 minutes** for the config to propagate across Google's edge before testing — early requests may time out (curl `000`) or reflect the previous weighting. |
 | Health check ranges in firewall | The firewall must allow ingress from `35.191.0.0/16` and `130.211.0.0/22` on TCP port 80. GCP health probes originate from these ranges. |
 | Cloud NAT required | Instances are private (no `access_config` block). They need Cloud NAT for `apt-get` to install nginx from the internet. |
 | Weights must sum to 100 | `production_weight + failover_weight == 100` is enforced by a `validation` block in `variables.tf`. Any other sum is rejected at plan time. |
 | No `access_config` = private instance | Omitting the `access_config` block in `network_interface` ensures the instance has **no public IP**. This is deliberate — all traffic must go through the Load Balancer. |
 | `create_before_destroy` on templates | Instance templates are immutable in GCP. The `lifecycle { create_before_destroy = true }` block ensures updates create a new template before destroying the old one. |
-| Global vs regional LB resources | This uses a **global** external HTTP Load Balancer. All related resources must be global: `google_compute_global_forwarding_rule`, `google_compute_global_address`, `google_compute_target_http_proxy`. The proxy-only subnet is auto-managed. |
+| Global vs regional LB resources | This uses a **global** external Application Load Balancer (`EXTERNAL_MANAGED`). All related resources must be global: `google_compute_global_forwarding_rule`, `google_compute_global_address`, `google_compute_target_http_proxy`, and both `google_compute_backend_service` blocks set `load_balancing_scheme = "EXTERNAL_MANAGED"`. The proxy-only subnet is auto-managed. |
 
 ## Testing scenarios
 

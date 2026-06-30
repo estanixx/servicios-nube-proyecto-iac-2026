@@ -12,11 +12,15 @@ University cloud services project deploying two independent nginx instances (pro
 ## Quick start
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS="$HOME/gcp-credentials.json"
 terraform init
-# Edit terraform.tfvars with your GCP project ID
 terraform apply
 ```
+
+`project_id` defaults to the project this repository is meant to deploy into
+(`servicios-nube-iac-2026`), so `terraform apply` runs without any extra
+configuration. Override it if needed with `-var="project_id=YOUR_PROJECT"`.
+Authentication uses your active `gcloud` credentials (Application Default
+Credentials); the reviewer is granted the `roles/editor` role on the project.
 
 After apply completes, get the Load Balancer IP:
 
@@ -30,7 +34,7 @@ The infrastructure is composed of three layers:
 
 1. **Network**: Custom VPC with two private subnets (`10.0.1.0/24` and `10.0.2.0/24`), Cloud Router + Cloud NAT for outbound internet access, and firewall rules allowing health check probes from Google's LB ranges.
 2. **Compute**: Two zonal Managed Instance Groups (MIGs), each with `target_size=1`, running `e2-micro` instances with Debian-11 and nginx. Instances have **no public IPs** — all traffic arrives through the Load Balancer.
-3. **Load Balancer**: Global external HTTP Load Balancer with a static IPv4 address. A single backend service contains both MIGs, and `capacity_scaler` (derived from the weight variables) controls the proportion of traffic each group receives.
+3. **Load Balancer**: Global external Application Load Balancer (`EXTERNAL_MANAGED`) with a static IPv4 address. Each MIG has its own backend service (`prod-backend`, `failover-backend`), and the URL map's `weighted_backend_services` route action splits traffic between them according to `production_weight` and `failover_weight`. This splits traffic per-request — even at low request volume — so the balanced scenario alternates between both services.
 
 ## Traffic scenarios
 
@@ -56,7 +60,34 @@ Test with:
 curl http://$(terraform output -raw lb_ip_address)
 ```
 
-For the Balanced scenario, run the curl command several times — consecutive requests should alternate between the two responses.
+For the Balanced scenario, run the curl command several times — consecutive requests alternate between the two responses.
+
+> **Note on propagation:** the global Application Load Balancer is an Anycast service. After `terraform apply` (or after changing the weights), allow **~4–5 minutes** for the configuration to propagate across Google's edge before testing — early requests may time out or return the previous weighting until propagation completes.
+
+## Evidencias
+
+Request logs captured live against the deployed Load Balancer for each scenario
+are in [`evidence/`](evidence/):
+
+| Scenario | Weights | Log (texto) | Captura | Result |
+|----------|---------|-------------|---------|--------|
+| Production Active | 100 / 0 | [`escenario-1-produccion.log`](evidence/escenario-1-produccion.log) | [PNG](evidence/escenario-1-produccion-log.png) | 20/20 production |
+| Maintenance | 0 / 100 | [`escenario-2-mantenimiento.log`](evidence/escenario-2-mantenimiento.log) | [PNG](evidence/escenario-2-mantenimiento-log.png) | 20/20 maintenance |
+| Balanced | 50 / 50 | [`escenario-3-balanceado.log`](evidence/escenario-3-balanceado.log) | [PNG](evidence/escenario-3-balanceado-log.png) | alternating, ~50/50 |
+
+Captura del escenario balanceado (se aprecia la alternancia petición a petición):
+
+![Escenario 50/50](evidence/escenario-3-balanceado-log.png)
+
+Browser screenshots of the same public IP under each scenario:
+
+| Production (green) | Maintenance (red) |
+|--------------------|-------------------|
+| ![Producción](evidence/navegador-produccion.png) | ![Mantenimiento](evidence/navegador-mantenimiento.png) |
+
+Teardown evidence (`terraform destroy` + post-destroy verification that no
+billable resources remain) is in [`evidence/terraform-destroy.log`](evidence/terraform-destroy.log)
+([captura PNG](evidence/terraform-destroy-log.png)).
 
 ## File structure
 
@@ -68,7 +99,7 @@ For the Balanced scenario, run the curl command several times — consecutive re
 | `outputs.tf` | `lb_ip_address` and `lb_url` outputs |
 | `network.tf` | VPC, 2 private subnets, Cloud Router, Cloud NAT, firewall |
 | `instances.tf` | Service account, 2 instance templates, 2 zonal MIGs |
-| `loadbalancer.tf` | Health check, backend service, URL map, HTTP proxy, global IP, forwarding rule |
+| `loadbalancer.tf` | Health check, two backend services, URL map with weighted routing, HTTP proxy, global IP, forwarding rule |
 | `scripts/prod-startup.sh` | Startup script — nginx + emerald production HTML |
 | `scripts/failover-startup.sh` | Startup script — nginx + tomato maintenance HTML |
 | `AGENTS.md` | LLM-oriented documentation for codebase understanding |

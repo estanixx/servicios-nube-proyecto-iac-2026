@@ -1,6 +1,7 @@
 variable "project_id" {
   description = "GCP project ID where resources will be created"
   type        = string
+  default     = "servicios-nube-iac-2026"
 }
 
 variable "region" {
