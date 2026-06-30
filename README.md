@@ -75,6 +75,15 @@ are in [`evidence/`](evidence/):
 | Maintenance | 0 / 100 | [`escenario-2-mantenimiento.log`](evidence/escenario-2-mantenimiento.log) | 20/20 maintenance |
 | Balanced | 50 / 50 | [`escenario-3-balanceado.log`](evidence/escenario-3-balanceado.log) | alternating, ~50/50 |
 
+Browser screenshots of the same public IP under each scenario:
+
+| Production (green) | Maintenance (red) |
+|--------------------|-------------------|
+| ![Producción](evidence/navegador-produccion.png) | ![Mantenimiento](evidence/navegador-mantenimiento.png) |
+
+Teardown evidence (`terraform destroy` + post-destroy verification that no
+billable resources remain) is in [`evidence/terraform-destroy.log`](evidence/terraform-destroy.log).
+
 ## File structure
 
 | File | Description |
