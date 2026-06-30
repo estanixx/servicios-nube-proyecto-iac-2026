@@ -8,6 +8,7 @@ cat > /var/www/html/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <style>
     body { background-color: #50C878; }
     h1 { color: white; text-align: center; margin-top: 20%; font-family: Arial; font-size: 3em; }
