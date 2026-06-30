@@ -69,11 +69,15 @@ For the Balanced scenario, run the curl command several times — consecutive re
 Request logs captured live against the deployed Load Balancer for each scenario
 are in [`evidence/`](evidence/):
 
-| Scenario | Weights | Log | Result |
-|----------|---------|-----|--------|
-| Production Active | 100 / 0 | [`escenario-1-produccion.log`](evidence/escenario-1-produccion.log) | 20/20 production |
-| Maintenance | 0 / 100 | [`escenario-2-mantenimiento.log`](evidence/escenario-2-mantenimiento.log) | 20/20 maintenance |
-| Balanced | 50 / 50 | [`escenario-3-balanceado.log`](evidence/escenario-3-balanceado.log) | alternating, ~50/50 |
+| Scenario | Weights | Log (texto) | Captura | Result |
+|----------|---------|-------------|---------|--------|
+| Production Active | 100 / 0 | [`escenario-1-produccion.log`](evidence/escenario-1-produccion.log) | [PNG](evidence/escenario-1-produccion-log.png) | 20/20 production |
+| Maintenance | 0 / 100 | [`escenario-2-mantenimiento.log`](evidence/escenario-2-mantenimiento.log) | [PNG](evidence/escenario-2-mantenimiento-log.png) | 20/20 maintenance |
+| Balanced | 50 / 50 | [`escenario-3-balanceado.log`](evidence/escenario-3-balanceado.log) | [PNG](evidence/escenario-3-balanceado-log.png) | alternating, ~50/50 |
+
+Captura del escenario balanceado (se aprecia la alternancia petición a petición):
+
+![Escenario 50/50](evidence/escenario-3-balanceado-log.png)
 
 Browser screenshots of the same public IP under each scenario:
 
@@ -82,7 +86,8 @@ Browser screenshots of the same public IP under each scenario:
 | ![Producción](evidence/navegador-produccion.png) | ![Mantenimiento](evidence/navegador-mantenimiento.png) |
 
 Teardown evidence (`terraform destroy` + post-destroy verification that no
-billable resources remain) is in [`evidence/terraform-destroy.log`](evidence/terraform-destroy.log).
+billable resources remain) is in [`evidence/terraform-destroy.log`](evidence/terraform-destroy.log)
+([captura PNG](evidence/terraform-destroy-log.png)).
 
 ## File structure
 
